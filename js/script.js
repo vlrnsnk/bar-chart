@@ -14,18 +14,21 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   const barWidth = width / dataset.width;
 
   const years = dataset.map(([year]) => year.slice(0, 4));
+  const yearsToDate = years.map((year) => new Date(year));
+  const maxYear = d3.max(yearsToDate);
+  maxYear.setMonth(maxYear.getMonth() + 6);
 
   const xScale = d3
-    .scaleLinear()
-    .domain([d3.min(years), d3.max(years)])
+    .scaleTime()
+    .domain([d3.min(yearsToDate), maxYear])
     .range([padding, width - padding]);
 
-  const xAxis = d3.axisBottom(xScale);
+  const xAxis = d3.axisBottom().scale(xScale);
 
   svg
     .append('g')
     .call(xAxis)
-    .attr('transform', 'translate(0, 400)');
+    .attr('transform', `translate(0, ${height - padding})`);
 
 }).catch((e) => {
   console.log(e);
