@@ -9,10 +9,14 @@ const svg = d3.select('.chart')
   .attr('width', width)
   .attr('height', height);
 
+const tooltip = d3.select('.chart')
+  .append('div')
+  .attr('id', 'tooltip')
+  .style('opacity', 0);
+
 d3.json(gdpDataUrl).then((jsonResponse) => {
   const dataset = jsonResponse.data;
   const barWidth = width / dataset.length;
-  console.log(barWidth)
 
   // Setting up xScale
   const years = dataset.map(([year]) => year.slice(0, 4));
@@ -20,16 +24,14 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   const maxYear = d3.max(yearsToDate);
   maxYear.setMonth(maxYear.getMonth());
 
-  const xScale = d3
-    .scaleTime()
+  const xScale = d3.scaleTime()
     .domain([d3.min(yearsToDate), maxYear])
     .range([padding, width - padding]);
 
   // Adding xAxis
   const xAxis = d3.axisBottom().scale(xScale);
 
-  svg
-    .append('g')
+  svg.append('g')
     .call(xAxis)
     .attr('transform', `translate(0, ${height - padding})`)
     .attr('id', 'x-axis');
@@ -38,16 +40,14 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   const gdp = dataset.map(([_year, gdp]) => gdp);
   const maxGdp = d3.max(gdp);
 
-  const yScale = d3
-    .scaleLinear()
+  const yScale = d3.scaleLinear()
     .domain([0, maxGdp])
     .range([height - padding, 0]);
 
   // Adding yAxis
   const yAxis = d3.axisLeft().scale(yScale);
 
-  svg
-    .append('g')
+  svg.append('g')
     .call(yAxis)
     .attr('transform', `translate(${padding}, 0)`)
     .attr('id', 'y-axis');
@@ -57,15 +57,11 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     return linearScale(item);
   });
 
-  svg
-    .selectAll('rect')
+  svg.selectAll('rect')
     .data(scaledGDP)
     .enter()
     .append('rect')
-    .attr('x', (_d, i) => {
-      console.log(xScale(yearsToDate[i]));
-      return xScale(yearsToDate[i]);
-    })
+    .attr('x', (_d, i) => xScale(yearsToDate[i]))
     .attr('y', (d) => height - d)
     .attr('width', barWidth)
     .attr('height', (d) => d)
@@ -73,8 +69,26 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('transform', `translate(0, -${padding})`)
     .attr('class', 'bar')
     .attr('data-date', (_d, i) => dataset[i][0])
-    .attr('data-gdp', (_d, i) => dataset[i][1]);
+    .attr('data-gdp', (_d, i) => dataset[i][1])
+    .attr('index', (_d, i) => i)
+    .on('mouseover', (event, d) => {
+      const index = event.target.getAttribute('index');
+      tooltip.html(`${years[index]}<br>$${gdp[index]} Billion`)
+        .style('left', `${index * barWidth + 10}px`)
+        .style('top', `${height - 150}px`)
+        // .style('transform', `translateX(${padding}px)`)
+        .style('opacity', 0.9)
+        .attr('data-date', dataset[index][0]);
+    })
+    .on('mouseout', () => {
+      // tooltip.transition().duration(200).style('opacity', 0);
+      tooltip.style('opacity', 0);
+    });
 
 }).catch((e) => {
   console.log(e);
 });
+//
+// document.getElementsByClassName('chart')[0].addEventListener('mouseover', (event) => {
+//   console.log(event.target);
+// });
