@@ -35,6 +35,13 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('transform', `translate(0, ${height - padding})`)
     .attr('id', 'x-axis');
 
+  // Adding caption to xAxis
+  svg.append('text')
+    .attr('x', 200)
+    .attr('y', 445)
+    .html('A Guide to the National Income and Product Accounts of the United States (NIPA) - (http://www.bea.gov/national/pdf/nipaguid.pdf)')
+    .style('font-size', '1.2rem');
+
   // Setting up yScale
   const gdp = dataset.map(([_year, gdp]) => gdp);
   const maxGdp = d3.max(gdp);
@@ -51,6 +58,15 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('transform', `translate(${padding}, 0)`)
     .attr('id', 'y-axis');
 
+  // Adding caption to y-axis
+  svg.append('text')
+    .text('Gross Domestic Product')
+    .attr('x', -240)
+    .attr('y', 80)
+    .attr('transform', 'rotate(-90)')
+    .style('font-size', '1.6rem');
+
+  // Creating sclaled GDP
   const linearScale = d3.scaleLinear().domain([0, maxGdp]).range([0, height - padding]);
   const scaledGDP = gdp.map(function (item) {
     return linearScale(item);
@@ -110,7 +126,3 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
 }).catch((e) => {
   console.log(e);
 });
-//
-// document.getElementsByClassName('chart')[0].addEventListener('mouseover', (event) => {
-//   console.log(event.target);
-// });
