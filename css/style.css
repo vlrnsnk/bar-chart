@@ -9,14 +9,16 @@
 
 body {
   font-size: 16rem;
-  min-height: 100vh;
   background-color: #9ecae1;
 }
 
 .container {
-  margin: 0 auto;
-  width: 940px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
+  padding: 20px 0 20px 10px;
   background-color: #fff;
 }
 

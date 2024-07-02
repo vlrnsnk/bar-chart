@@ -38,7 +38,7 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   // Adding caption to xAxis
   svg.append('text')
     .attr('x', 200)
-    .attr('y', 445)
+    .attr('y', 455)
     .html('A Guide to the National Income and Product Accounts of the United States (NIPA) - (http://www.bea.gov/national/pdf/nipaguid.pdf)')
     .style('font-size', '1.2rem');
 
@@ -61,8 +61,8 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   // Adding caption to y-axis
   svg.append('text')
     .text('Gross Domestic Product')
-    .attr('x', -240)
-    .attr('y', 80)
+    .attr('x', -200)
+    .attr('y', 90)
     .attr('transform', 'rotate(-90)')
     .style('font-size', '1.6rem');
 
