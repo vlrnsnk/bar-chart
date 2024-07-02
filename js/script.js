@@ -37,18 +37,14 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   // Setting up yScale
   const gdp = dataset.map(([_year, gdp]) => gdp);
   const maxGdp = d3.max(gdp);
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, maxGdp])
-    .range([height - padding, padding]);
 
-  const yAxisScale = d3
+  const yScale = d3
     .scaleLinear()
     .domain([0, maxGdp])
     .range([height - padding, 0]);
 
   // Adding yAxis
-  const yAxis = d3.axisLeft().scale(yAxisScale);
+  const yAxis = d3.axisLeft().scale(yScale);
 
   svg
     .append('g')
