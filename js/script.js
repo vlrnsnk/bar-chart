@@ -19,7 +19,6 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   const barWidth = width / dataset.length;
 
   // Setting up xScale
-  const years = dataset.map(([year]) => year.slice(0, 4));
   const yearsToDate = dataset.map(([year]) => new Date(year));
   const maxYear = d3.max(yearsToDate);
   maxYear.setMonth(maxYear.getMonth());
@@ -57,6 +56,29 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     return linearScale(item);
   });
 
+  // Mapping years to year + quarter
+  const yearsAndQuarters = dataset.map(([year]) => {
+    let quarterOfYear = '';
+    const monthOfYear = year.slice(5, 7);
+
+    switch (monthOfYear) {
+      case '01':
+        quarterOfYear = 'Q1';
+        break;
+      case '04':
+        quarterOfYear = 'Q2';
+        break;
+      case '07':
+        quarterOfYear = 'Q3';
+        break;
+      case '10':
+        quarterOfYear = 'Q4';
+        break;
+    }
+
+    return `${year.slice(0, 4)} ${quarterOfYear}`;
+  });
+
   svg.selectAll('rect')
     .data(scaledGDP)
     .enter()
@@ -73,7 +95,7 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('index', (_d, i) => i)
     .on('mouseover', (event, d) => {
       const index = event.target.getAttribute('index');
-      tooltip.html(`${years[index]}<br>$${gdp[index]} Billion`)
+      tooltip.html(`${yearsAndQuarters[index]}<br>$${gdp[index]} Billion`)
         .style('left', `${index * barWidth + 10}px`)
         .style('top', `${height - 150}px`)
         // .style('transform', `translateX(${padding}px)`)
