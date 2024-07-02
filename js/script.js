@@ -111,15 +111,15 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('index', (_d, i) => i)
     .on('mouseover', (event, d) => {
       const index = event.target.getAttribute('index');
+
       tooltip.html(`${yearsAndQuarters[index]}<br>$${gdp[index]} Billion`)
         .style('left', `${index * barWidth + 10}px`)
         .style('top', `${height - 150}px`)
-        // .style('transform', `translateX(${padding}px)`)
-        .style('opacity', 0.9)
         .attr('data-date', dataset[index][0]);
+      tooltip.transition().duration(100).style('opacity', 0.9);
     })
     .on('mouseout', () => {
-      // tooltip.transition().duration(200).style('opacity', 0);
+      tooltip.transition().duration(100).style('opacity', 0);
       tooltip.style('opacity', 0);
     });
 
