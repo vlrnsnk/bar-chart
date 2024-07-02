@@ -31,7 +31,8 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   svg
     .append('g')
     .call(xAxis)
-    .attr('transform', `translate(0, ${height - padding})`);
+    .attr('transform', `translate(0, ${height - padding})`)
+    .attr('id', 'x-axis');
 
   // Setting up yScale
   const gdp = dataset.map(([_year, gdp]) => gdp);
@@ -52,7 +53,8 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   svg
     .append('g')
     .call(yAxis)
-    .attr('transform', `translate(${padding}, 0)`);
+    .attr('transform', `translate(${padding}, 0)`)
+    .attr('id', 'y-axis');
 
   const linearScale = d3.scaleLinear().domain([0, maxGdp]).range([0, height - padding]);
   const scaledGDP = gdp.map(function (item) {
@@ -72,7 +74,10 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('width', barWidth)
     .attr('height', (d) => d)
     .style('fill', '#3182bd')
-    .attr('transform', `translate(0, -${padding})`);
+    .attr('transform', `translate(0, -${padding})`)
+    .attr('class', 'bar')
+    .attr('data-date', (_d, i) => dataset[i][0])
+    .attr('data-gdp', (_d, i) => dataset[i][1]);
 
 }).catch((e) => {
   console.log(e);
