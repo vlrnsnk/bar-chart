@@ -114,7 +114,7 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('data-date', (_d, i) => dataset[i][0])
     .attr('data-gdp', (_d, i) => dataset[i][1])
     .attr('index', (_d, i) => i)
-    .on('mouseover', (event, d) => {
+    .on('mouseenter', (event, d) => {
       const index = event.target.getAttribute('index');
 
       highlighter.transition()
@@ -131,11 +131,11 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
         .style('left', `${index * barWidth + 100}px`)
         .style('top', `${height - 150}px`)
         .attr('data-date', dataset[index][0]);
-      tooltip.transition().duration(100).style('opacity', 0.9);
+      tooltip.transition().duration(200).style('opacity', 0.9);
     })
-    .on('mouseout', () => {
-      // highlighter.transition().duration(100).style('opacity', 0);
-      // tooltip.transition().duration(100).style('opacity', 0);
+    .on('mouseleave', () => {
+      tooltip.transition().duration(200).style('opacity', 0);
+      highlighter.transition().duration(200).style('opacity', 0);
     });
 
 }).catch((e) => {
