@@ -21,7 +21,7 @@ const highlighter = d3.select('.chart')
 
 d3.json(gdpDataUrl).then((jsonResponse) => {
   const dataset = jsonResponse.data;
-  const barWidth = (width - padding) / dataset.length;
+  const barWidth = (width - padding - padding) / dataset.length;
 
   // Setting up xScale
   const yearsToDate = dataset.map(([year]) => new Date(year));
@@ -123,19 +123,19 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
         .style('width', `${barWidth}px`)
         .style('height', `${d}px`)
         .style('top', `${height - padding - d}px`)
-        .style('left', `${(Number(index) + 1) * 3.055}px`)
+        .style('left', `${(Number(index) + 1) * barWidth+ 60}px`)
         .attr('transform', 'translateX(60)')
         // .style('left', `${xScale(yearsToDate[index])}px`)
 
       tooltip.html(`${yearsAndQuarters[index]}<br>$${gdp[index]} Billion`)
-        .style('left', `${index * barWidth + 10}px`)
+        .style('left', `${index * barWidth + 100}px`)
         .style('top', `${height - 150}px`)
         .attr('data-date', dataset[index][0]);
       tooltip.transition().duration(100).style('opacity', 0.9);
     })
     .on('mouseout', () => {
-      highlighter.transition().duration(100).style('opacity', 0);
-      tooltip.transition().duration(100).style('opacity', 0);
+      // highlighter.transition().duration(100).style('opacity', 0);
+      // tooltip.transition().duration(100).style('opacity', 0);
     });
 
 }).catch((e) => {
