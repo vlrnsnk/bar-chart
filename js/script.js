@@ -14,9 +14,14 @@ const tooltip = d3.select('.chart')
   .attr('id', 'tooltip')
   .style('opacity', 0);
 
+const highlighter = d3.select('.chart')
+  .append('div')
+  .style('opacity', 0)
+  .attr('class', 'highlighter');
+
 d3.json(gdpDataUrl).then((jsonResponse) => {
   const dataset = jsonResponse.data;
-  const barWidth = width / dataset.length;
+  const barWidth = (width - padding) / dataset.length;
 
   // Setting up xScale
   const yearsToDate = dataset.map(([year]) => new Date(year));
@@ -112,6 +117,16 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .on('mouseover', (event, d) => {
       const index = event.target.getAttribute('index');
 
+      highlighter.transition()
+        .duration(0)
+        .style('opacity', 0.9)
+        .style('width', `${barWidth}px`)
+        .style('height', `${d}px`)
+        .style('top', `${height - padding - d}px`)
+        .style('left', `${(Number(index) + 1) * 3.055}px`)
+        .attr('transform', 'translateX(60)')
+        // .style('left', `${xScale(yearsToDate[index])}px`)
+
       tooltip.html(`${yearsAndQuarters[index]}<br>$${gdp[index]} Billion`)
         .style('left', `${index * barWidth + 10}px`)
         .style('top', `${height - 150}px`)
@@ -119,8 +134,8 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
       tooltip.transition().duration(100).style('opacity', 0.9);
     })
     .on('mouseout', () => {
+      highlighter.transition().duration(100).style('opacity', 0);
       tooltip.transition().duration(100).style('opacity', 0);
-      tooltip.style('opacity', 0);
     });
 
 }).catch((e) => {

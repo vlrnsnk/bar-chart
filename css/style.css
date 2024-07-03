@@ -42,3 +42,8 @@ text {
   padding: 5px;
   font-size: 1.6rem;
 }
+
+.highlighter {
+  position: absolute;
+  background-color: #9ecae1;
+}
