@@ -129,7 +129,7 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
 
       tooltip.html(`${yearsAndQuarters[index]}<br>$${gdp[index]} Billion`)
         .style('left', `${index * barWidth + 100}px`)
-        .style('top', `${height - 150}px`)
+        .style('top', `${height - 170}px`)
         .attr('data-date', dataset[index][0]);
       tooltip.transition().duration(200).style('opacity', 0.9);
     })
