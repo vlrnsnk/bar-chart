@@ -100,28 +100,7 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('data-date', (_d, i) => dataset[i][0])
     .attr('data-gdp', (_d, i) => dataset[i][1])
     .attr('index', (_d, i) => i)
-    .on('mouseenter', (event, d) => {
-      const index = event.target.getAttribute('index');
-      // Add highlighting of the bar that is selected by mouse
-      highlighter.transition()
-        .duration(0)
-        .style('opacity', 0.9)
-        .style('width', `${barWidth}px`)
-        .style('height', `${d}px`)
-        .style('top', `${height - padding - d}px`)
-        .style('left', `${(Number(index) + 1) * barWidth+ 60}px`)
-        .attr('transform', 'translateX(60)');
-      // Show tooltip about current data of the bar
-      tooltip.html(
-        `${yearsAndQuarters[index]}<br>$${gdp[index].toFixed(1)
-          .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')} Billion`
-      )
-        .style('left', `${index * barWidth + 100}px`)
-        .style('top', `${height - 170}px`)
-        .attr('data-date', dataset[index][0]);
-      tooltip.transition().duration(200).style('opacity', 0.9);
-    })
-      // Hide tooltip and highlighter when mouse leaves bar
+    // Hide tooltip and highlighter when mouse leaves bar
     .on('mouseleave', () => {
       tooltip.transition().duration(200).style('opacity', 0);
       highlighter.transition().duration(200).style('opacity', 0);
@@ -131,14 +110,40 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   function drawChart() {
     const windowWidth = parseInt(d3.select('html').style('width'), 10);
     const width = windowWidth > 900 ? 900 : windowWidth - 40;
-    const barWidth = width / dataset.length;
+    const barWidth = (width - 2 * padding) / dataset.length;
 
     svg.attr('width', width);
+    // xScale.range([padding, width - padding]);
     xScale.range([padding, width - padding]);
     xAxis.call(d3.axisBottom().scale(xScale));
     bars
       .attr('x', (_d, i) => xScale(yearsToDate[i]))
-      .attr('width', barWidth);
+      .attr('width', barWidth)
+      // Remove old handlers
+      .on('mouseenter', null)
+      .on('mouseenter', (event, d) => {
+        const index = event.target.getAttribute('index');
+        // Add highlighting of the bar that is selected by mouse
+        highlighter.transition()
+          .duration(0)
+          .style('opacity', 0.9)
+          .style('width', `${barWidth}px`)
+          .style('height', `${d}px`)
+          .style('top', `${height - d + 83}px`)
+          .style('left', `${(Number(index) + 1) * barWidth + padding}px`);
+
+        // Change tooltip offset at the middle of the chart
+        const tooltipXOffset = index < dataset.length / 2 ? 80 : -100;
+        // Show tooltip about current data of the bar
+        tooltip.html(
+          `${yearsAndQuarters[index]}<br>$${gdp[index].toFixed(1)
+            .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')} Billion`
+        )
+          .style('left', `${index * barWidth + tooltipXOffset}px`)
+          .style('top', `${height - 100}px`)
+          .attr('data-date', dataset[index][0]);
+        tooltip.transition().duration(200).style('opacity', 0.9);
+      });
   }
 
   drawChart();
