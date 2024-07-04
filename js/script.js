@@ -124,10 +124,12 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
         .style('height', `${d}px`)
         .style('top', `${height - padding - d}px`)
         .style('left', `${(Number(index) + 1) * barWidth+ 60}px`)
-        .attr('transform', 'translateX(60)')
-        // .style('left', `${xScale(yearsToDate[index])}px`)
+        .attr('transform', 'translateX(60)');
 
-      tooltip.html(`${yearsAndQuarters[index]}<br>$${gdp[index]} Billion`)
+      tooltip.html(
+        `${yearsAndQuarters[index]}<br>$${gdp[index].toFixed(1)
+          .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')} Billion`
+      )
         .style('left', `${index * barWidth + 100}px`)
         .style('top', `${height - 170}px`)
         .attr('data-date', dataset[index][0]);
