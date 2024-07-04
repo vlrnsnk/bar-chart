@@ -6,6 +6,16 @@ const svg = d3.select('.chart')
   .append('svg')
   .attr('height', height);
 
+const tooltip = d3.select('.chart')
+  .append('div')
+  .attr('id', 'tooltip')
+  .style('opacity', 0);
+
+const highlighter = d3.select('.chart')
+  .append('div')
+  .style('opacity', 0)
+  .attr('class', 'highlighter');
+
 d3.json(gdpDataUrl).then((jsonResponse) => {
   const dataset = jsonResponse.data;
   const yearsToDate = dataset.map(([year]) => new Date(year));
@@ -19,11 +29,16 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('id', 'x-axis');
 
   // Adding caption to xAxis
-  svg.append('text')
-    .attr('x', 200)
-    .attr('y', 455)
-    .html('A Guide to the National Income and Product Accounts of the United States (NIPA) - (http://www.bea.gov/national/pdf/nipaguid.pdf)')
-    .style('font-size', '1.2rem');
+  d3.select('.chart').append('div')
+    // .attr('x', 200)
+    // .attr('y', 455)
+    .html('A Guide to the National Income and Product Accounts of the United States (NIPA) (http://www.bea.gov/national/pdf/nipaguid.pdf)')
+    .attr('class', 'x-axis-caption')
+    // .attr('width', '100')
+    // .style('font-size', '1.2rem')
+    // .style('color', '#acf123')
+    // .style('white-space', 'normal');
+    // .attr('textLength', '400')
 
   // Setting up yScale
   const gdp = dataset.map(([_year, gdp]) => gdp);
