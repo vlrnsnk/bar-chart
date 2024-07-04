@@ -29,16 +29,10 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('id', 'x-axis');
 
   // Adding caption to xAxis
-  d3.select('.chart').append('div')
-    // .attr('x', 200)
-    // .attr('y', 455)
+  d3.select('.chart')
+    .append('div')
     .html('A Guide to the National Income and Product Accounts of the United States (NIPA) (http://www.bea.gov/national/pdf/nipaguid.pdf)')
     .attr('class', 'x-axis-caption')
-    // .attr('width', '100')
-    // .style('font-size', '1.2rem')
-    // .style('color', '#acf123')
-    // .style('white-space', 'normal');
-    // .attr('textLength', '400')
 
   // Setting up yScale
   const gdp = dataset.map(([_year, gdp]) => gdp);
