@@ -1,42 +1,20 @@
-const width = 900;
 const height = 460;
 const padding = 60;
-
 const gdpDataUrl = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json';
 
 const svg = d3.select('.chart')
   .append('svg')
-  .attr('width', width)
   .attr('height', height);
-
-const tooltip = d3.select('.chart')
-  .append('div')
-  .attr('id', 'tooltip')
-  .style('opacity', 0);
-
-const highlighter = d3.select('.chart')
-  .append('div')
-  .style('opacity', 0)
-  .attr('class', 'highlighter');
 
 d3.json(gdpDataUrl).then((jsonResponse) => {
   const dataset = jsonResponse.data;
-  const barWidth = (width - padding - padding) / dataset.length;
-
-  // Setting up xScale
   const yearsToDate = dataset.map(([year]) => new Date(year));
   const maxYear = d3.max(yearsToDate);
   maxYear.setMonth(maxYear.getMonth());
 
   const xScale = d3.scaleTime()
-    .domain([d3.min(yearsToDate), maxYear])
-    .range([padding, width - padding]);
-
-  // Adding xAxis
-  const xAxis = d3.axisBottom().scale(xScale);
-
-  svg.append('g')
-    .call(xAxis)
+    .domain([d3.min(yearsToDate), maxYear]);
+  const xAxis = svg.append('g')
     .attr('transform', `translate(0, ${height - padding})`)
     .attr('id', 'x-axis');
 
@@ -100,13 +78,12 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     return `${year.slice(0, 4)} ${quarterOfYear}`;
   });
 
-  svg.selectAll('rect')
+  // Setting for bars
+  const bars = svg.selectAll('rect')
     .data(scaledGDP)
     .enter()
     .append('rect')
-    .attr('x', (_d, i) => xScale(yearsToDate[i]))
     .attr('y', (d) => height - d)
-    .attr('width', barWidth)
     .attr('height', (d) => d)
     .style('fill', '#3182bd')
     .attr('transform', `translate(0, -${padding})`)
@@ -116,7 +93,7 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     .attr('index', (_d, i) => i)
     .on('mouseenter', (event, d) => {
       const index = event.target.getAttribute('index');
-
+      // Add highlighting of the bar that is selected by mouse
       highlighter.transition()
         .duration(0)
         .style('opacity', 0.9)
@@ -125,7 +102,7 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
         .style('top', `${height - padding - d}px`)
         .style('left', `${(Number(index) + 1) * barWidth+ 60}px`)
         .attr('transform', 'translateX(60)');
-
+      // Show tooltip about current data of the bar
       tooltip.html(
         `${yearsAndQuarters[index]}<br>$${gdp[index].toFixed(1)
           .replace(/(\d)(?=(\d{3})+\.)/g, '$1,')} Billion`
@@ -135,11 +112,29 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
         .attr('data-date', dataset[index][0]);
       tooltip.transition().duration(200).style('opacity', 0.9);
     })
+      // Hide tooltip and highlighter when mouse leaves bar
     .on('mouseleave', () => {
       tooltip.transition().duration(200).style('opacity', 0);
       highlighter.transition().duration(200).style('opacity', 0);
     });
 
+  // Drawing chart for the current device width
+  function drawChart() {
+    const windowWidth = parseInt(d3.select('html').style('width'), 10);
+    const width = windowWidth > 900 ? 900 : windowWidth - 40;
+    const barWidth = width / dataset.length;
+
+    svg.attr('width', width);
+    xScale.range([padding, width - padding]);
+    xAxis.call(d3.axisBottom().scale(xScale));
+    bars
+      .attr('x', (_d, i) => xScale(yearsToDate[i]))
+      .attr('width', barWidth);
+  }
+
+  drawChart();
+  // Redraw chart on resize window
+  window.addEventListener('resize', drawChart);
 }).catch((e) => {
   console.log(e);
 });
