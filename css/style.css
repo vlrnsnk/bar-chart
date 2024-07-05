@@ -72,3 +72,9 @@ text {
     right: 60px;
   }
 }
+
+@media (max-width: 298px) {
+  .x-axis-caption {
+    top: 590px;
+  }
+}
