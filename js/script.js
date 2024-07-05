@@ -113,9 +113,12 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
     const barWidth = (width - 2 * padding) / dataset.length;
 
     svg.attr('width', width);
-    // xScale.range([padding, width - padding]);
     xScale.range([padding, width - padding]);
-    xAxis.call(d3.axisBottom().scale(xScale));
+    xAxis.call(d3.axisBottom()
+      .scale(xScale)
+      .ticks(Math.min(width / 58))
+    );
+
     bars
       .attr('x', (_d, i) => xScale(yearsToDate[i]))
       .attr('width', barWidth)
