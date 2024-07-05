@@ -110,10 +110,12 @@ d3.json(gdpDataUrl).then((jsonResponse) => {
   function drawChart() {
     const windowWidth = parseInt(d3.select('html').style('width'), 10);
     const width = windowWidth > 900 ? 900 : windowWidth - 40;
-    const barWidth = (width - 2 * padding) / dataset.length;
+    const rightPadding = windowWidth > 900 ? padding : 20;
+    const barWidth = (width - padding - rightPadding) / dataset.length;
 
+    // Configure chart depending on the device's width
     svg.attr('width', width);
-    xScale.range([padding, width - padding]);
+    xScale.range([padding, width - rightPadding]);
     xAxis.call(d3.axisBottom()
       .scale(xScale)
       .ticks(Math.min(width / 58))
