@@ -9,7 +9,7 @@ Data visualization project #1 from freeCodeCamp
 - [Contact](#contact)
 
 ## Introduction
-This is a project to fulfill the below user stories for data visualization project #1 for Data Visualization course from freeCodeCamp.
+This is a project to fulfill the user stories for data visualization project #1 for Data Visualization course from freeCodeCamp.
 
 ## Features
 - Using HTML, JavaScript, CSS, and the D3 svg-based visualization library.
